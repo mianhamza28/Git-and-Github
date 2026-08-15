@@ -326,6 +326,130 @@ Phir clone karte waqt SSH URL use hota hai:
 ```bash
 git clone git@github.com:company/my-project.git
 ```
+Achha sawal! Ye URL kahin se "milta" nahi automatically — aapko khud GitHub se copy karna parhta hai. Chaliye poora process dekhte hain:
+
+## SSH URL Kaha Se Milta Hai?
+
+1. GitHub par apne repository (`company/my-project`) par jayein
+2. Green button **"Code"** par click karein (repo page ke upar right side)
+3. Ek dropdown khulega jismein 3 options honge: **HTTPS**, **SSH**, **GitHub CLI**
+4. **SSH** tab select karein
+5. Wahan se URL copy karein — kuch aisa dikhega:
+   ```
+   git@github.com:company/my-project.git
+   ```
+
+Ye URL repo-specific hota hai — har repository ka apna alag URL hota hai (organization/username + repo name ke hisaab se).
+
+## Ab Clone Kaise Karein
+
+Terminal khol kar jis folder mein aap project rakhna chahte hain wahan jayein, phir:
+
+```bash
+cd ~/projects
+git clone git@github.com:company/my-project.git
+```
+
+Agar SSH key sahi se GitHub par add hai (jo aapne pehle step mein ki thi), to ye direct clone kar dega — koi password nahi maangega.
+
+## Verify Karna (Agar Pehli Baar SSH Use Kar Rahe Hain)
+
+Clone se pehle test kar sakte hain ke SSH connection GitHub se ho raha hai ya nahi:
+
+```bash
+ssh -T git@github.com
+```
+
+Agar sahi se setup hai to ye message aayega:
+```
+Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+## Clone Ke Baad — Branch Banana
+
+Clone hone ke baad, folder mein jayein aur naya branch banayein:
+
+```bash
+cd my-project
+git checkout -b infra/setup-ci-pipeline
+```
+
+---
+
+Bilkul, chaliye clone step ko complete karte hain aur aage ka workflow bhi dekh lete hain:
+
+## Clone Karna (SSH Key Setup Ke Baad)
+
+### Step 1: Pehle Test Karein SSH Connection Kaam Kar Raha Hai
+
+Clone karne se pehle ye verify kar lein ke GitHub aapki SSH key pehchan raha hai:
+
+```bash
+ssh -T git@github.com
+```
+
+Agar sahi se connect hua to ye message aayega:
+```
+Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+### Step 2: Repo Clone Karna
+
+```bash
+git clone git@github.com:company/my-project.git
+```
+
+Ye command:
+- Repo ko current directory mein download kar degi
+- `my-project` naam ka folder ban jayega
+- Aap us folder mein `cd my-project` karke ja sakte hain
+
+### Step 3: Naye Branch Par Kaam Shuru Karna
+
+Ab jo aapne mention kiya `infra/setup-ci-pipeline` branch, wo yahan create hoga:
+
+```bash
+cd my-project
+git checkout -b infra/setup-ci-pipeline
+```
+
+Ya newer Git syntax:
+```bash
+git switch -c infra/setup-ci-pipeline
+```
+
+### Step 4: Kaam Karna Aur Changes Add Karna
+
+Files edit karne ke baad:
+```bash
+git add .
+git commit -m "Add CI pipeline configuration"
+```
+
+### Step 5: Branch Ko Push Karna
+
+Pehli baar push karte waqt upstream set karna padta hai:
+```bash
+git push -u origin infra/setup-ci-pipeline
+```
+
+Uske baad sirf `git push` kaafi hoga.
+
+### Step 6: Pull Karna (Latest Changes Lena)
+
+Agar team ke doosre members ne changes kiye hain aur aap unhe apne branch mein lana chahte hain:
+```bash
+git pull origin main
+```
+
+Ya rebase ke sath (cleaner history ke liye):
+```bash
+git pull --rebase origin main
+```
+
+---
+
+Chahen to main next step bata sakta hoon — jaise **Pull Request kaise banate hain GitHub par**, ya **CI pipeline (GitHub Actions) ka basic YAML file** kaisa hota hai `infra/setup-ci-pipeline` ke context mein. Kya aap wo dekhna chahenge?
 
 **B) HTTPS + Personal Access Token (PAT)**
 ```bash
