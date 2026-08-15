@@ -322,6 +322,54 @@ cat ~/.ssh/id_ed25519.pub
 ```
 Yeh public key GitHub par add ki jati hai: **Settings → SSH and GPG Keys → New SSH Key**
 
+Acha sawal hai — confusion clear kar deta hoon. Yahan concept samajhna zaroori hai:
+
+## Key Kis Machine Par Generate Hogi?
+
+**Jis server/machine se aap Git push/pull karenge, wahi SSH key generate hogi.** Matlab:
+
+- Agar aap apne **local laptop/PC** se GitHub use kar rahe hain → wahan key banegi
+- Agar aap kisi **remote/production server** (jahan CI/CD deploy hota hai) se GitHub access karna chahte hain → **usi server** par login karke key generate karni hogi
+
+```bash
+# Us machine par jo GitHub se connect hogi:
+ssh-keygen -t ed25519 -C "devops@company.com"
+```
+
+Ye command chalane se do files banti hain:
+
+| File | Kya Hai | Kahan Rehti Hai |
+|---|---|---|
+| `~/.ssh/id_ed25519` | **Private Key** | Sirf isi machine par, kabhi kahin share nahi hoti |
+| `~/.ssh/id_ed25519.pub` | **Public Key** | Ye GitHub par add hoti hai |
+
+## Private Key Kahan Add Hoti Hai?
+
+**Private key kahin bhi "add" nahi hoti — wo apni jagah (us server ke `~/.ssh/` folder) mein hi rehti hai.** Ye kabhi GitHub ya kisi aur jagah upload/paste nahi ki jati.
+
+## Public Key Kahan Add Hoti Hai?
+
+Ye GitHub par add hoti hai:
+
+1. `cat ~/.ssh/id_ed25519.pub` se copy karo
+2. GitHub → Settings → SSH and GPG Keys → New SSH Key → Paste karo
+
+## Real DevOps Scenario Mein
+
+Agar aapka **CI/CD server** (jaise Jenkins, GitLab Runner, ya production server) GitHub se code pull karega:
+
+- Us server par hi `ssh-keygen` chalega
+- Us server ki **public key** GitHub repo mein **Deploy Key** ke tor par add hogi (Settings → Deploy Keys — ye individual account key se better hai kyunki isay specific repo tak limit kar sakte hain)
+- Private key hamesha usi server par secure rahegi, file permission `600` ke sath:
+
+```bash
+chmod 600 ~/.ssh/id_ed25519
+```
+
+**Golden Rule:** Public key share hoti hai, private key kabhi nahi. Har machine/server ki apni alag key pair honi chahiye.
+
+Kya aap ye setup **apne local machine** ke liye kar rahe hain ya **CI/CD server (jaise Jenkins/GitHub Actions runner)** ke liye? Us hisaab se main next steps detail mein bata sakta hoon.
+
 Phir clone karte waqt SSH URL use hota hai:
 ```bash
 git clone git@github.com:company/my-project.git
